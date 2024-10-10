@@ -1,22 +1,40 @@
-# Maven
-# Build your Java project and run tests with Apache Maven.
-# Add steps that analyze code, save build artifacts, deploy, and more:
-# https://docs.microsoft.com/azure/devops/pipelines/languages/java
+# regression_tests.yml
 
-trigger:
-- master
+tests:
+  - name: Test User Login
+    description: Verify that users can log in with valid credentials.
+    steps:
+      - action: "Navigate to login page"
+        expected: "Login page is displayed"
+      - action: "Enter username and password"
+        expected: "User is logged in successfully"
+      - action: "Check dashboard"
+        expected: "User dashboard is displayed"
 
-pool:
-  vmImage: ubuntu-latest
+  - name: Test User Registration
+    description: Ensure new users can register.
+    steps:
+      - action: "Navigate to registration page"
+        expected: "Registration page is displayed"
+      - action: "Fill in registration form"
+        expected: "Form submission is successful"
+      - action: "Check confirmation email"
+        expected: "Confirmation email is received"
 
-steps:
-- task: Maven@3
-  inputs:
-    mavenPomFile: 'pom.xml'
-    mavenOptions: '-Xmx3072m'
-    javaHomeOption: 'JDKVersion'
-    jdkVersionOption: '1.11'
-    jdkArchitectureOption: 'x64'
-    publishJUnitResults: true
-    testResultsFiles: '**/surefire-reports/TEST-*.xml'
-    goals: 'package'
+  - name: Test Data Retrieval
+    description: Check that data is retrieved correctly from the database.
+    steps:
+      - action: "Make API request for data"
+        expected: "Data is returned in the expected format"
+      - action: "Verify data integrity"
+        expected: "Data matches the database records"
+
+environment:
+  browser: "chrome"
+  os: "windows"
+  database: "mysql"
+
+# optional: specific configurations
+config:
+  timeout: 30
+  retry_attempts: 2
